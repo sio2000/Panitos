@@ -9,17 +9,24 @@ interface TokenomicsData {
   percentage: number;
 }
 
-const Tokenomics: React.FC = () => {
+interface TokenomicsProps {
+  lang: 'en' | 'el';
+  t: any; // Using 'any' for simplicity, you could define a stricter type for t
+}
+
+const Tokenomics: React.FC<TokenomicsProps> = ({ lang, t }) => {
+  const tokenomicsContent = t[lang].tokenomics;
+  
   const tokenomicsData: TokenomicsData[] = [
-    { name: 'Public Sale', value: 400000000, color: '#00D4FF', percentage: 40 },
-    { name: 'Development', value: 250000000, color: '#6366F1', percentage: 25 },
-    { name: 'Marketing', value: 200000000, color: '#8B5CF6', percentage: 20 },
-    { name: 'Team & Advisors', value: 150000000, color: '#6B7280', percentage: 15 },
+    { name: tokenomicsContent.distribution.lp, value: 500000000, color: '#00D4FF', percentage: 50 },
+    { name: tokenomicsContent.distribution.sale, value: 300000000, color: '#6366F1', percentage: 30 },
+    { name: tokenomicsContent.distribution.dev, value: 150000000, color: '#8B5CF6', percentage: 15 },
+    { name: tokenomicsContent.distribution.marketing, value: 50000000, color: '#6B7280', percentage: 5 },
   ];
 
-  const totalSupply = 1000000000;
-  const currentPrice = 0.00125;
-  const marketCap = totalSupply * currentPrice;
+  const totalSupply = 1000000000; // 1 billion PAN tokens
+  const currentPrice = 0.000008098; // Calculated from market cap $4,049 / total supply
+  const marketCap = 4049; // From Pump.fun
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -38,7 +45,7 @@ const Tokenomics: React.FC = () => {
 
   return (
     <div className="bg-crypto-dark/50 backdrop-blur-sm border border-crypto-gray-700 rounded-xl p-6 shadow-2xl glow-effect">
-      <h3 className="text-2xl font-bold text-white mb-6 animate-fade-in">Tokenomics</h3>
+      <h3 className="text-2xl font-bold text-white mb-6 animate-fade-in">{tokenomicsContent.title}</h3>
       
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Chart */}
@@ -83,63 +90,66 @@ const Tokenomics: React.FC = () => {
         {/* Token Details */}
         <div className="space-y-6 animate-slide-in-right">
           <div className="bg-crypto-gray-800/50 rounded-lg p-6 shadow-xl glow-effect">
-            <h4 className="text-lg font-bold text-white mb-4">Token Details</h4>
+            <h4 className="text-lg font-bold text-white mb-4">{tokenomicsContent.detailsTitle}</h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Total Supply</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.totalSupply}</span>
                 <span className="text-white font-bold">
                   <CountUp end={totalSupply} separator="," /> PAN
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Circulating Supply</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.circulatingSupply}</span>
                 <span className="text-white font-bold">
-                  <CountUp end={400000000} separator="," /> PAN
+                  <CountUp end={800000000} separator="," /> PAN
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Current Price</span>
-                <span className="text-white font-bold">${currentPrice.toFixed(6)}</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.currentPrice}</span>
+                <span className="text-white font-bold">${currentPrice.toFixed(8)}</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Market Cap</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.marketCap}</span>
                 <span className="text-white font-bold">
-                  ${(marketCap / 1000000).toFixed(2)}M
+                  ${marketCap.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Blockchain</span>
-                <span className="text-white font-bold">Ethereum</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.blockchain}</span>
+                <span className="text-white font-bold">Solana</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-crypto-gray-700/30 rounded-lg hover:bg-crypto-gray-700/50 transition-colors">
-                <span className="text-crypto-gray-300">Token Standard</span>
-                <span className="text-white font-bold">ERC-20</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.tokenStandard}</span>
+                <span className="text-white font-bold">SPL Token</span>
               </div>
             </div>
           </div>
 
           <div className="bg-crypto-gray-800/50 rounded-lg p-6 shadow-xl glow-effect">
-            <h4 className="text-lg font-bold text-white mb-4">Staking Rewards</h4>
+            <h4 className="text-lg font-bold text-white mb-4">{tokenomicsContent.launchInfoTitle}</h4>
             <div className="text-center">
-              <div className="text-3xl font-bold gradient-text mb-2 animate-glow">12% APY</div>
-              <p className="text-crypto-gray-300">Annual staking rewards for long-term holders</p>
+              <div className="text-2xl font-bold gradient-text mb-2 animate-glow">{tokenomicsContent.launchInfoStatus}</div>
+              <p className="text-crypto-gray-300">{tokenomicsContent.launchInfoDesc}</p>
+              <div className="mt-3 text-sm text-crypto-gray-400">
+                {tokenomicsContent.marketCap}: ${marketCap.toLocaleString()}
+              </div>
             </div>
           </div>
 
           <div className="bg-crypto-gray-800/50 rounded-lg p-6 shadow-xl glow-effect">
-            <h4 className="text-lg font-bold text-white mb-4">Vesting Schedule</h4>
+            <h4 className="text-lg font-bold text-white mb-4">{tokenomicsContent.utilityTitle}</h4>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-2 bg-crypto-gray-700/30 rounded-lg">
-                <span className="text-crypto-gray-300">Public Sale</span>
-                <span className="text-white font-bold">No Lock</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.utilityTrading}</span>
+                <span className="text-white font-bold">{tokenomicsContent.utilityAvailable}</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-crypto-gray-700/30 rounded-lg">
-                <span className="text-crypto-gray-300">Team & Advisors</span>
-                <span className="text-white font-bold">12 months</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.utilityLiquidity}</span>
+                <span className="text-white font-bold">{tokenomicsContent.utilityLocked}</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-crypto-gray-700/30 rounded-lg">
-                <span className="text-crypto-gray-300">Development</span>
-                <span className="text-white font-bold">6 months</span>
+                <span className="text-crypto-gray-300">{tokenomicsContent.utilityPlatform}</span>
+                <span className="text-white font-bold">Pump.fun</span>
               </div>
             </div>
           </div>

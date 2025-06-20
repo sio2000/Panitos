@@ -34,6 +34,218 @@ import Tokenomics from './components/Tokenomics';
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [lang, setLang] = useState<'en' | 'el'>('en');
+
+  const t = {
+    en: {
+      nav: ["About", "Features", "Tokenomics", "Roadmap", "Buy Now"],
+      heroTitle: "The Best Crypto Coin",
+      heroSubtitle: "The Future of Digital Assets",
+      heroDesc: "Revolutionary blockchain technology designed for the next generation of decentralized finance, combining cutting-edge innovation with unmatched security and scalability.",
+      buy: "Buy Now",
+      whitepaper: "View Whitepaper",
+      track: "Track Market",
+      marketTitle: "Live Market Data",
+      marketSubtitle: "Real-time Panitos (PAN) token data from Pump.fun - Track live price, market cap, volume, and trading activity",
+      aboutTitle: "About Panitos",
+      aboutSubtitle: "Panitos is a newly launched Solana token on the Pump.fun platform, designed to provide trading opportunities and liquidity in the growing meme coin ecosystem.",
+      aboutCardTitle: "New Token on Pump.fun Platform",
+      aboutCardDesc1: "Panitos represents an exciting opportunity for early investors in the meme coin space. With a current market cap of $4,049, it's positioned for potential growth as the community expands and trading volume increases.",
+      aboutCardDesc2: "Built on Solana's high-performance blockchain, Panitos benefits from lightning-fast transactions, minimal fees, and a growing DeFi ecosystem. The token is designed to provide liquidity and trading opportunities on the popular Pump.fun platform.",
+      badgeSolana: "Solana Network",
+      badgePump: "Pump.fun Listed",
+      stats: ["Market Cap", "Total Supply", "Blockchain", "Token Standard"],
+      featuresTitle: "Why Choose Panitos?",
+      featuresSubtitle: "Discover the advantages of trading Panitos on the Pump.fun platform",
+      feature1Title: "Solana Security",
+      feature1Desc: "Built on Solana's robust blockchain infrastructure with advanced security features and protection against common vulnerabilities in the crypto space.",
+      feature2Title: "Fast & Low Cost",
+      feature2Desc: "Solana's high-performance network enables lightning-fast transactions with minimal fees, making Panitos trading efficient and cost-effective.",
+      feature3Title: "Pump.fun Platform",
+      feature3Desc: "Listed on Pump.fun, a popular platform for discovering and trading new tokens with a growing community of crypto enthusiasts and traders.",
+      tokenomics: {
+        title: "Tokenomics",
+        detailsTitle: "Token Details",
+        totalSupply: "Total Supply",
+        circulatingSupply: "Circulating Supply",
+        currentPrice: "Current Price",
+        marketCap: "Market Cap",
+        blockchain: "Blockchain",
+        tokenStandard: "Token Standard",
+        launchInfoTitle: "Launch Info",
+        launchInfoStatus: "Recently Launched",
+        launchInfoDesc: "New token on Pump.fun platform",
+        utilityTitle: "Token Utility",
+        utilityTrading: "Trading",
+        utilityAvailable: "Available",
+        utilityLiquidity: "Liquidity",
+        utilityLocked: "Locked",
+        utilityPlatform: "Platform",
+        distribution: {
+          lp: 'Liquidity Pool',
+          sale: 'Public Sale',
+          dev: 'Development',
+          marketing: 'Marketing',
+        }
+      },
+      roadmap: {
+        title: "Our Roadmap",
+        items: [
+          { quarter: 'December 2024', title: 'Token Launch', description: 'Panitos token launched on Pump.fun platform with initial liquidity', status: 'completed' },
+          { quarter: 'January 2025', title: 'Community Growth', description: 'Building community awareness and expanding holder base', status: 'current' },
+          { quarter: 'Q1 2025', title: 'Exchange Expansion', description: 'Seeking additional DEX listings and trading opportunities', status: 'upcoming' },
+          { quarter: 'Q2 2025', title: 'Ecosystem Development', description: 'Exploring partnerships and utility development', status: 'upcoming' }
+        ]
+      },
+      community: {
+        title: "Join Our Community",
+        subtitle: "Be part of the revolution that's transforming digital finance. Connect with developers, investors, and enthusiasts worldwide.",
+        twitter: "Twitter",
+        twitterDesc: "Follow for updates",
+        telegram: "Telegram",
+        telegramDesc: "Join discussions",
+        discord: "Discord",
+        discordDesc: "Chat with community",
+        newsletter: "Newsletter",
+        newsletterDesc: "Get updates",
+        stayUpdated: "Stay Updated",
+        emailPlaceholder: "Enter your email",
+        subscribe: "Subscribe"
+      },
+      whyInvest: {
+        title: "Why Invest in Panitos?",
+        subtitle: "Discover the unique advantages that make Panitos an attractive investment opportunity in the growing Solana ecosystem",
+        earlyOpportunity: "Early Investment Opportunity",
+        earlyDesc: "Panitos represents a unique opportunity to get in early on a promising Solana token. With a current market cap of just $4,049, the potential for significant growth is substantial as the project gains traction and community support.",
+        highGrowth: "High Growth Potential",
+        highGrowthDesc: "Low market cap with room for exponential growth as adoption increases",
+        solanaBenefits: "Solana Benefits",
+        solanaBenefitsDesc: "Fast transactions, low fees, and growing ecosystem support",
+        communityDriven: "Community Driven",
+        communityDrivenDesc: "Transparent project with active community engagement",
+        pumpFunListed: "Pump.fun Listed",
+        pumpFunListedDesc: "Listed on popular platform with growing user base",
+        readyToInvest: "Ready to Invest?",
+        readyDesc: "Join early investors and be part of the Panitos growth story",
+        buyNow: "Buy Panitos Now"
+      },
+      footer: {
+        description: "A community-driven Solana token listed on Pump.fun platform, focused on transparency and sustainable growth in the crypto ecosystem.",
+        quickLinks: "Quick Links",
+        legal: "Legal",
+        privacy: "Privacy Policy",
+        terms: "Terms of Service",
+        whitepaper: "Whitepaper",
+        audit: "Audit Report",
+        copyright: "© 2025 Panitos – All Rights Reserved.",
+        disclaimer: "Disclaimer: Cryptocurrency investments carry risk. Please invest responsibly."
+      }
+    },
+    el: {
+      nav: ["Σχετικά", "Χαρακτηριστικά", "Tokenomics", "Οδικός Χάρτης", "Αγορά Τώρα"],
+      heroTitle: "Το Καλύτερο Κρυπτονόμισμα",
+      heroSubtitle: "Το Μέλλον των Ψηφιακών Περιουσιακών Στοιχείων",
+      heroDesc: "Επαναστατική τεχνολογία blockchain σχεδιασμένη για τη νέα γενιά αποκεντρωμένης χρηματοδότησης, συνδυάζοντας καινοτομία αιχμής με απαράμιλλη ασφάλεια και επεκτασιμότητα.",
+      buy: "Αγορά Τώρα",
+      whitepaper: "Λευκή Βίβλος",
+      track: "Παρακολούθηση Αγοράς",
+      marketTitle: "Ζωντανά Στοιχεία Αγοράς",
+      marketSubtitle: "Ζωντανά δεδομένα του Panitos (PAN) από το Pump.fun - Δείτε τιμή, κεφαλαιοποίηση, όγκο και δραστηριότητα σε πραγματικό χρόνο",
+      aboutTitle: "Σχετικά με το Panitos",
+      aboutSubtitle: "Το Panitos είναι ένα πρόσφατα λανσαρισμένο token του Solana στην πλατφόρμα Pump.fun, σχεδιασμένο για να παρέχει ευκαιρίες συναλλαγών και ρευστότητα στο αναπτυσσόμενο οικοσύστημα των meme coins.",
+      aboutCardTitle: "Νέο Token στην Πλατφόρμα Pump.fun",
+      aboutCardDesc1: "Το Panitos αποτελεί μια συναρπαστική ευκαιρία για πρώιμους επενδυτές στον χώρο των meme coin. Με τρέχουσα κεφαλαιοποίηση αγοράς $4,049, είναι τοποθετημένο για πιθανή ανάπτυξη καθώς η κοινότητα επεκτείνεται και ο όγκος συναλλαγών αυξάνεται.",
+      aboutCardDesc2: "Χτισμένο στο υψηλής απόδοσης blockchain του Solana, το Panitos επωφελείται από αστραπιαίες συναλλαγές, ελάχιστα τέλη και ένα αναπτυσσόμενο οικοσύστημα DeFi. Το token έχει σχεδιαστεί για να παρέχει ρευστότητα και ευκαιρίες συναλλαγών στη δημοφιλή πλατφόρμα Pump.fun.",
+      badgeSolana: "Δίκτυο Solana",
+      badgePump: "Εισηγμένο στο Pump.fun",
+      stats: ["Κεφ/ποίηση Αγοράς", "Συνολική Προσφορά", "Blockchain", "Πρότυπο Token"],
+      featuresTitle: "Γιατί να επιλέξετε το Panitos;",
+      featuresSubtitle: "Ανακαλύψτε τα πλεονεκτήματα των συναλλαγών Panitos στην πλατφόρμα Pump.fun",
+      feature1Title: "Ασφάλεια Solana",
+      feature1Desc: "Χτισμένο στην ισχυρή υποδομή blockchain του Solana με προηγμένα χαρακτηριστικά ασφαλείας και προστασία από κοινές ευπάθειες στον χώρο των κρυπτονομισμάτων.",
+      feature2Title: "Γρήγορο & Χαμηλό Κόστος",
+      feature2Desc: "Το δίκτυο υψηλής απόδοσης του Solana επιτρέπει αστραπιαίες συναλλαγές με ελάχιστα τέλη, καθιστώντας τις συναλλαγές Panitos αποδοτικές και οικονομικές.",
+      feature3Title: "Πλατφόρμα Pump.fun",
+      feature3Desc: "Εισηγμένο στο Pump.fun, μια δημοφιλή πλατφόρμα για την ανακάλυψη και τη διαπραγμάτευση νέων token με μια αυξανόμενη κοινότητα ενθουσιωδών και εμπόρων κρυπτονομισμάτων.",
+      tokenomics: {
+        title: "Tokenomics",
+        detailsTitle: "Λεπτομέρειες Token",
+        totalSupply: "Συνολική Προσφορά",
+        circulatingSupply: "Κυκλοφορούσα Προσφορά",
+        currentPrice: "Τρέχουσα Τιμή",
+        marketCap: "Κεφ/ποίηση Αγοράς",
+        blockchain: "Blockchain",
+        tokenStandard: "Πρότυπο Token",
+        launchInfoTitle: "Πληροφορίες Εκκίνησης",
+        launchInfoStatus: "Πρόσφατη Εκκίνηση",
+        launchInfoDesc: "Νέο token στην πλατφόρμα Pump.fun",
+        utilityTitle: "Χρησιμότητα Token",
+        utilityTrading: "Συναλλαγές",
+        utilityAvailable: "Διαθέσιμο",
+        utilityLiquidity: "Ρευστότητα",
+        utilityLocked: "Κλειδωμένη",
+        utilityPlatform: "Πλατφόρμα",
+        distribution: {
+          lp: 'Πισίνα Ρευστότητας',
+          sale: 'Δημόσια Πώληση',
+          dev: 'Ανάπτυξη',
+          marketing: 'Μάρκετινγκ',
+        }
+      },
+      roadmap: {
+        title: "Ο Οδικός μας Χάρτης",
+        items: [
+          { quarter: 'Δεκέμβριος 2024', title: 'Εκκίνηση Token', description: 'Το token Panitos λανσαρίστηκε στην πλατφόρμα Pump.fun με αρχική ρευστότητα', status: 'completed' },
+          { quarter: 'Ιανουάριος 2025', title: 'Ανάπτυξη Κοινότητας', description: 'Δημιουργία αναγνωρισιμότητας και επέκταση της βάσης κατόχων', status: 'current' },
+          { quarter: 'Q1 2025', title: 'Επέκταση σε Ανταλλακτήρια', description: 'Αναζήτηση για εισαγωγή σε επιπλέον αποκεντρωμένα ανταλλακτήρια (DEX) και ευκαιρίες συναλλαγών', status: 'upcoming' },
+          { quarter: 'Q2 2025', title: 'Ανάπτυξη Οικοσυστήματος', description: 'Διερεύνηση συνεργασιών και ανάπτυξη χρησιμότητας', status: 'upcoming' }
+        ]
+      },
+      community: {
+        title: "Γίνετε Μέλος της Κοινότητάς Μας",
+        subtitle: "Γίνετε μέρος της επανάστασης που μεταμορφώνει την ψηφιακή χρηματοδότηση. Συνδεθείτε με προγραμματιστές, επενδυτές και ενθουσιώδεις παγκοσμίως.",
+        twitter: "Twitter",
+        twitterDesc: "Ακολουθήστε για νέα",
+        telegram: "Telegram",
+        telegramDesc: "Συμμετέχετε σε συζητήσεις",
+        discord: "Discord",
+        discordDesc: "Συνομιλήστε με την κοινότητα",
+        newsletter: "Newsletter",
+        newsletterDesc: "Λάβετε ενημερώσεις",
+        stayUpdated: "Μείνετε Ενημερωμένοι",
+        emailPlaceholder: "Εισάγετε το email σας",
+        subscribe: "Εγγραφή"
+      },
+      whyInvest: {
+        title: "Γιατί να Επενδύσετε στο Panitos;",
+        subtitle: "Ανακαλύψτε τα μοναδικά πλεονεκτήματα που κάνουν το Panitos μια ελκυστική επενδυτική ευκαιρία στο αναπτυσσόμενο οικοσύστημα του Solana",
+        earlyOpportunity: "Ευκαιρία Πρώιμης Επένδυσης",
+        earlyDesc: "Το Panitos αντιπροσωπεύει μια μοναδική ευκαιρία να μπειτε νωρίς σε ένα υποσχόμενο token του Solana. Με τρέχουσα κεφαλαιοποίηση αγοράς μόνο $4,049, η δυνατότητα για σημαντική ανάπτυξη είναι σημαντική καθώς το project κερδίζει έλξη και υποστήριξη από την κοινότητα.",
+        highGrowth: "Υψηλό Δυναμικό Ανάπτυξης",
+        highGrowthDesc: "Χαμηλή κεφαλαιοποίηση αγοράς με χώρο για εκθετική ανάπτυξη καθώς η υιοθέτηση αυξάνεται",
+        solanaBenefits: "Οφέλη του Solana",
+        solanaBenefitsDesc: "Γρήγορες συναλλαγές, χαμηλά τέλη και αυξανόμενη υποστήριξη οικοσυστήματος",
+        communityDriven: "Καθοδηγούμενο από την Κοινότητα",
+        communityDrivenDesc: "Διαφανές project με ενεργή συμμετοχή της κοινότητας",
+        pumpFunListed: "Εισηγμένο στο Pump.fun",
+        pumpFunListedDesc: "Εισηγμένο σε δημοφιλή πλατφόρμα με αυξανόμενη βάση χρηστών",
+        readyToInvest: "Είστε Έτοιμοι να Επενδύσετε;",
+        readyDesc: "Γίνετε μέλος των πρώιμων επενδυτών και μέρος της ιστορίας ανάπτυξης του Panitos",
+        buyNow: "Αγοράστε Panitos Τώρα"
+      },
+      footer: {
+        description: "Ένα token του Solana καθοδηγούμενο από την κοινότητα, εισηγμένο στην πλατφόρμα Pump.fun, που εστιάζει στη διαφάνεια και τη βιώσιμη ανάπτυξη στο οικοσύστημα των κρυπτονομισμάτων.",
+        quickLinks: "Γρήγοροι Σύνδεσμοι",
+        legal: "Νομικά",
+        privacy: "Πολιτική Απορρήτου",
+        terms: "Όροι Χρήσης",
+        whitepaper: "Λευκή Βίβλος",
+        audit: "Έκθεση Ελέγχου",
+        copyright: "© 2025 Panitos – Με την επιφύλαξη παντός δικαιώματος.",
+        disclaimer: "Αποποίηση ευθύνης: Οι επενδύσεις σε κρυπτονομίσματα ενέχουν κίνδυνο. Παρακαλούμε επενδύστε υπεύθυνα."
+      }
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -55,25 +267,27 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
-              </div>
+              <img src="/arrow.png" alt="Panitos Crypto Coin Logo" className="h-10 w-10" />
               <span className="text-2xl font-bold gradient-text">
-                Panitos
+                Panitos Crypto Coin
               </span>
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <button onClick={() => scrollToSection('about')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">About</button>
-              <button onClick={() => scrollToSection('features')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">Features</button>
-              <button onClick={() => scrollToSection('tokenomics')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">Tokenomics</button>
-              <button onClick={() => scrollToSection('roadmap')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">Roadmap</button>
-              <button onClick={() => scrollToSection('team')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">Team</button>
-              <button 
-                onClick={() => scrollToSection('community')}
+              <button onClick={() => scrollToSection('about')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">{t[lang].nav[0]}</button>
+              <button onClick={() => scrollToSection('features')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">{t[lang].nav[1]}</button>
+              <button onClick={() => scrollToSection('tokenomics')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">{t[lang].nav[2]}</button>
+              <button onClick={() => scrollToSection('roadmap')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">{t[lang].nav[3]}</button>
+              <a 
+                href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
+                target="_blank" 
+                rel="noopener noreferrer"
                 className="button-primary"
               >
-                Buy Now
+                {t[lang].nav[4]}
+              </a>
+              <button onClick={() => setLang(lang === 'en' ? 'el' : 'en')} className="ml-4 px-3 py-1 rounded bg-crypto-primary text-white font-bold hover:bg-crypto-secondary transition-colors">
+                {lang === 'en' ? 'ΕΛ' : 'EN'}
               </button>
             </div>
 
@@ -95,8 +309,14 @@ function App() {
               <button onClick={() => scrollToSection('features')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Features</button>
               <button onClick={() => scrollToSection('tokenomics')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Tokenomics</button>
               <button onClick={() => scrollToSection('roadmap')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Roadmap</button>
-              <button onClick={() => scrollToSection('team')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Team</button>
-              <button onClick={() => scrollToSection('community')} className="block px-3 py-2 text-crypto-primary font-medium">Buy Now</button>
+              <a 
+                href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block px-3 py-2 text-crypto-primary font-medium"
+              >
+                Buy Now
+              </a>
             </div>
           </div>
         )}
@@ -137,54 +357,65 @@ function App() {
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8 animate-float">
-            <div className="w-24 h-24 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-2xl transform hover:rotate-12 transition-transform duration-500 hover:scale-110">
-              <Sparkles className="h-12 w-12 text-white animate-pulse" />
+          <div className="mb-0 animate-float">
+            <div className="w-12 h-12 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-2xl mx-auto mb-0 flex items-center justify-center shadow-2xl transform hover:rotate-12 transition-transform duration-500 hover:scale-110">
+              <Sparkles className="h-6 w-6 text-white animate-pulse" />
             </div>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-            <span className="gradient-text animate-gradient">
-              Panitos
-            </span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-2 animate-fade-in text-white">
+            {t[lang].heroTitle}
           </h1>
           
-          <p className="text-xl md:text-2xl text-crypto-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
-            The Future of Digital Assets
+          <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
+            {t[lang].heroSubtitle}
           </p>
           
-          <p className="text-lg text-crypto-gray-400 mb-12 max-w-2xl mx-auto animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-            Revolutionary blockchain technology designed for the next generation of decentralized finance, 
-            combining cutting-edge innovation with unmatched security and scalability.
+          <p className="text-lg text-white mb-12 max-w-2xl mx-auto animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+            {t[lang].heroDesc}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-            <button className="group premium-button premium-button-primary">
+            <a 
+              href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group premium-button premium-button-primary"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative flex items-center space-x-3">
-                <span>Buy Now</span>
+                <span>{t[lang].buy}</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
-            </button>
+            </a>
             
-            <button className="group premium-button premium-button-primary">
+            <a 
+              href="/whitepaper.pdf" 
+              download="Panitos-Whitepaper.pdf"
+              className="group premium-button premium-button-primary"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative flex items-center space-x-3">
-                <span>View Whitepaper</span>
+                <span>{t[lang].whitepaper}</span>
                 <Download className="h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
-            </button>
+            </a>
             
-            <button className="group premium-button premium-button-primary">
+            <a 
+              href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group premium-button premium-button-primary"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative flex items-center space-x-3">
-                <span>Track Market</span>
+                <span>{t[lang].track}</span>
                 <TrendingUp className="h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
-            </button>
+            </a>
           </div>
           
           <div className="mt-16 animate-bounce">
@@ -203,11 +434,15 @@ function App() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
-              Live <span className="gradient-text animate-gradient">Market Data</span>
+              {lang === 'en' ? (
+                <>Live <span className="gradient-text animate-gradient">Market Data</span></>
+              ) : (
+                <><span className="gradient-text animate-gradient">{t[lang].marketTitle}</span></>
+              )}
             </h2>
             <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
             <p className="text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up">
-              Real-time cryptocurrency market information and live trading data
+              {t[lang].marketSubtitle}
             </p>
           </div>
           
@@ -232,34 +467,37 @@ function App() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
-              About <span className="gradient-text animate-gradient">Panitos</span>
+              {lang === 'en' ? (
+                <>About <span className="gradient-text animate-gradient">Panitos</span></>
+              ) : (
+                <><span className="gradient-text animate-gradient">{t[lang].aboutTitle}</span></>
+              )}
             </h2>
             <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
+            <p className="text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up">
+              {t[lang].aboutSubtitle}
+            </p>
           </div>
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-slide-in-left">
               <h3 className="text-2xl font-bold text-white">
-                Revolutionizing Digital Finance Through Innovation
+                {t[lang].aboutCardTitle}
               </h3>
               <p className="text-lg text-crypto-gray-300 leading-relaxed">
-                Panitos represents the next evolution in blockchain technology, designed to address the 
-                critical challenges facing the cryptocurrency ecosystem. Our platform combines advanced 
-                security protocols with lightning-fast transaction speeds.
+                {t[lang].aboutCardDesc1}
               </p>
               <p className="text-lg text-crypto-gray-300 leading-relaxed">
-                Built on cutting-edge blockchain infrastructure, Panitos offers institutional-grade 
-                security, seamless scalability, and innovative DeFi solutions that empower users 
-                to take control of their financial future.
+                {t[lang].aboutCardDesc2}
               </p>
               <div className="flex items-center space-x-4 pt-4">
                 <div className="flex items-center space-x-2 bg-crypto-gray-800 px-4 py-2 rounded-full shadow-lg">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-crypto-gray-300 font-medium">Secure & Scalable</span>
+                  <span className="text-crypto-gray-300 font-medium">{t[lang].badgeSolana}</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-crypto-gray-800 px-4 py-2 rounded-full shadow-lg">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-crypto-gray-300 font-medium">DeFi Ready</span>
+                  <span className="text-crypto-gray-300 font-medium">{t[lang].badgePump}</span>
                 </div>
               </div>
             </div>
@@ -269,20 +507,20 @@ function App() {
                 <div className="bg-crypto-gray-800 rounded-xl p-6 shadow-2xl glow-effect">
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">100K+</div>
-                      <div className="text-sm text-crypto-gray-400">TPS</div>
+                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">$4,049</div>
+                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[0]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">$0.001</div>
-                      <div className="text-sm text-crypto-gray-400">Transaction Fee</div>
+                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">1B</div>
+                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[1]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">99.9%</div>
-                      <div className="text-sm text-crypto-gray-400">Uptime</div>
+                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">Solana</div>
+                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[2]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">∞</div>
-                      <div className="text-sm text-crypto-gray-400">Potential</div>
+                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">SPL</div>
+                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[3]}</div>
                     </div>
                   </div>
                 </div>
@@ -302,11 +540,15 @@ function App() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
-              Why Choose <span className="gradient-text animate-gradient">Panitos</span>?
+              {lang === 'en' ? (
+                <>Why Choose <span className="gradient-text">Panitos</span>?</>
+              ) : (
+                <><span className="gradient-text animate-gradient">{t[lang].featuresTitle}</span></>
+              )}
             </h2>
             <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
             <p className="text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up">
-              Discover the revolutionary features that set Panitos apart from traditional cryptocurrencies
+              {t[lang].featuresSubtitle}
             </p>
           </div>
           
@@ -315,10 +557,9 @@ function App() {
               <div className="bg-gradient-to-br from-crypto-primary to-crypto-secondary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Shield className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-primary transition-colors">Advanced Security</h3>
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-primary transition-colors">{t[lang].feature1Title}</h3>
               <p className="text-crypto-gray-300 leading-relaxed">
-                Multi-layer security architecture with quantum-resistant encryption and 
-                institutional-grade protection for your digital assets.
+                {t[lang].feature1Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
                 <div className="bg-gradient-to-r from-crypto-primary to-crypto-secondary h-1 rounded-full transition-all duration-1000 group-hover:w-full w-0"></div>
@@ -329,10 +570,9 @@ function App() {
               <div className="bg-gradient-to-br from-crypto-secondary to-crypto-accent w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Zap className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-secondary transition-colors">Lightning Fast</h3>
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-secondary transition-colors">{t[lang].feature2Title}</h3>
               <p className="text-crypto-gray-300 leading-relaxed">
-                Revolutionary consensus mechanism enabling 100,000+ transactions per second 
-                with sub-second finality and minimal fees.
+                {t[lang].feature2Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
                 <div className="bg-gradient-to-r from-crypto-secondary to-crypto-accent h-1 rounded-full transition-all duration-1000 group-hover:w-full w-0"></div>
@@ -343,10 +583,9 @@ function App() {
               <div className="bg-gradient-to-br from-crypto-accent to-crypto-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Cpu className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-accent transition-colors">Smart Contracts</h3>
+              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-accent transition-colors">{t[lang].feature3Title}</h3>
               <p className="text-crypto-gray-300 leading-relaxed">
-                Turing-complete smart contract platform supporting complex DeFi applications 
-                and decentralized autonomous organizations (DAOs).
+                {t[lang].feature3Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
                 <div className="bg-gradient-to-r from-crypto-accent to-crypto-primary h-1 rounded-full transition-all duration-1000 group-hover:w-full w-0"></div>
@@ -359,7 +598,7 @@ function App() {
       {/* Tokenomics Section */}
       <section id="tokenomics" className="py-20 bg-crypto-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Tokenomics />
+          <Tokenomics lang={lang} t={t} />
         </div>
       </section>
 
@@ -368,7 +607,11 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Our <span className="gradient-text">Roadmap</span>
+              {lang === 'en' ? (
+                <>Our <span className="gradient-text">Roadmap</span></>
+              ) : (
+                <><span className="gradient-text">{t[lang].roadmap.title}</span></>
+              )}
             </h2>
             <div className="w-24 h-1 gradient-bg mx-auto mb-8"></div>
           </div>
@@ -377,12 +620,7 @@ function App() {
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 gradient-bg hidden md:block"></div>
             
             <div className="space-y-12">
-              {[
-                { quarter: 'Q1 2025', title: 'Whitepaper & Token Launch', description: 'Comprehensive technical documentation and initial token distribution', status: 'completed' },
-                { quarter: 'Q2 2025', title: 'Exchange Listings', description: 'Major CEX and DEX integrations for global accessibility', status: 'current' },
-                { quarter: 'Q3 2025', title: 'DeFi Ecosystem Launch', description: 'Launch of staking, yield farming, and lending protocols', status: 'upcoming' },
-                { quarter: 'Q4 2025', title: 'Institutional Partnerships', description: 'Strategic partnerships with major financial institutions', status: 'upcoming' }
-              ].map((item, index) => (
+              {t[lang].roadmap.items.map((item, index) => (
                 <div key={index} className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className="flex-1 md:w-1/2">
                     <div className={`bg-crypto-gray-800 rounded-2xl p-6 shadow-lg border-l-4 ${
@@ -415,51 +653,172 @@ function App() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section id="team" className="py-20 bg-crypto-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Why Invest in Panitos Section */}
+      <section className="py-20 bg-crypto-gray-900 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/5 via-transparent to-crypto-secondary/5"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-crypto-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-crypto-secondary/10 rounded-full blur-3xl"></div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Meet Our <span className="gradient-text">Team</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+              {lang === 'en' ? (
+                <>Why Invest in <span className="gradient-text animate-gradient">Panitos</span>?</>
+              ) : (
+                <>{t[lang].whyInvest.title}</>
+              )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8"></div>
+            <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
+            <p className="text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up">
+              {t[lang].whyInvest.subtitle}
+            </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Users className="h-12 w-12 text-white" />
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left Column - Images */}
+            <div className="space-y-8 animate-slide-in-left">
+              {/* First Image */}
+              <div className="relative group">
+                {/* Glowing Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/30 to-crypto-secondary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+                
+                {/* Main Image Container */}
+                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
+                  <div className="relative overflow-hidden rounded-2xl">
+                    <img 
+                      src="/panitos.png" 
+                      alt="Panitos Token" 
+                      className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                    
+                    {/* Overlay Effects */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-crypto-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Floating Elements */}
+                    <div className="absolute top-4 right-4 bg-crypto-primary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold animate-pulse">
+                      HOT
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold">
+                      SOLANA
+                    </div>
+                  </div>
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute -top-4 -left-4 w-8 h-8 bg-crypto-primary rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-crypto-secondary rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Alex Chen</h3>
-              <p className="text-crypto-primary font-medium mb-3">Founder & CEO</p>
-              <p className="text-crypto-gray-300 text-sm">
-                Former senior engineer at major tech companies with 10+ years in blockchain 
-                development and DeFi protocols.
-              </p>
+              
+              {/* Second Image */}
+              <div className="relative group">
+                {/* Glowing Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-crypto-secondary/30 to-crypto-accent/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+                
+                {/* Main Image Container */}
+                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
+                  <div className="relative overflow-hidden rounded-2xl">
+                    <img 
+                      src="/pan.png" 
+                      alt="Panitos Token Alternative" 
+                      className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                    
+                    {/* Overlay Effects */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-crypto-secondary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Floating Elements */}
+                    <div className="absolute top-4 right-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold animate-pulse">
+                      NEW
+                    </div>
+                  </div>
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute -top-4 -left-4 w-8 h-8 bg-crypto-secondary rounded-full animate-ping opacity-75"></div>
+                </div>
+              </div>
             </div>
             
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-crypto-secondary to-crypto-accent rounded-full mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Cpu className="h-12 w-12 text-white" />
+            {/* Right Column - Content */}
+            <div className="space-y-8 animate-slide-in-right">
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold text-white">
+                  {t[lang].whyInvest.earlyOpportunity}
+                </h3>
+                <p className="text-lg text-crypto-gray-300 leading-relaxed">
+                  {t[lang].whyInvest.earlyDesc}
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Sarah Johnson</h3>
-              <p className="text-crypto-secondary font-medium mb-3">CTO</p>
-              <p className="text-crypto-gray-300 text-sm">
-                Blockchain architect with expertise in consensus mechanisms and 
-                distributed systems across multiple chains.
-              </p>
-            </div>
-            
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-crypto-accent to-crypto-primary rounded-full mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <TrendingUp className="h-12 w-12 text-white" />
+              
+              {/* Benefits Grid */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-white" />
+                    </div>
+                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.highGrowth}</h4>
+                  </div>
+                  <p className="text-crypto-gray-300 text-sm">
+                    {t[lang].whyInvest.highGrowthDesc}
+                  </p>
+                </div>
+                
+                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full flex items-center justify-center">
+                      <Zap className="h-5 w-5 text-white" />
+                    </div>
+                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.solanaBenefits}</h4>
+                  </div>
+                  <p className="text-crypto-gray-300 text-sm">
+                    {t[lang].whyInvest.solanaBenefitsDesc}
+                  </p>
+                </div>
+                
+                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-secondary to-crypto-accent rounded-full flex items-center justify-center">
+                      <Users className="h-5 w-5 text-white" />
+                    </div>
+                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.communityDriven}</h4>
+                  </div>
+                  <p className="text-crypto-gray-300 text-sm">
+                    {t[lang].whyInvest.communityDrivenDesc}
+                  </p>
+                </div>
+                
+                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-accent to-crypto-primary rounded-full flex items-center justify-center">
+                      <Shield className="h-5 w-5 text-white" />
+                    </div>
+                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.pumpFunListed}</h4>
+                  </div>
+                  <p className="text-crypto-gray-300 text-sm">
+                    {t[lang].whyInvest.pumpFunListedDesc}
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Michael Rodriguez</h3>
-              <p className="text-crypto-accent font-medium mb-3">Head of Strategy</p>
-              <p className="text-crypto-gray-300 text-sm">
-                Former investment banker and crypto analyst with deep understanding 
-                of market dynamics and institutional adoption.
-              </p>
+              
+              {/* CTA Section */}
+              <div className="bg-gradient-to-r from-crypto-primary/20 to-crypto-secondary/20 rounded-2xl p-6 border border-crypto-primary/30">
+                <div className="text-center">
+                  <h4 className="text-xl font-bold text-white mb-3">{t[lang].whyInvest.readyToInvest}</h4>
+                  <p className="text-crypto-gray-300 mb-4">
+                    {t[lang].whyInvest.readyDesc}
+                  </p>
+                  <a 
+                    href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-crypto-primary to-crypto-secondary text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                  >
+                    <span>{t[lang].whyInvest.buyNow}</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -470,51 +829,54 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Join Our <span className="text-crypto-gray-200">Community</span>
+              {lang === 'en' ? (
+                <>Join Our <span className="text-crypto-gray-200">Community</span></>
+              ) : (
+                <>{t[lang].community.title}</>
+              )}
             </h2>
             <div className="w-24 h-1 bg-white mx-auto mb-8"></div>
             <p className="text-xl text-crypto-gray-200 max-w-3xl mx-auto">
-              Be part of the revolution that's transforming digital finance. 
-              Connect with developers, investors, and enthusiasts worldwide.
+              {t[lang].community.subtitle}
             </p>
           </div>
           
           <div className="grid md:grid-cols-4 gap-6 mb-12">
             <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
               <Twitter className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">Twitter</h3>
-              <p className="text-crypto-gray-200 text-sm">Follow for updates</p>
+              <h3 className="text-white font-semibold mb-2">{t[lang].community.twitter}</h3>
+              <p className="text-crypto-gray-200 text-sm">{t[lang].community.twitterDesc}</p>
             </a>
             
             <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
               <Send className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">Telegram</h3>
-              <p className="text-crypto-gray-200 text-sm">Join discussions</p>
+              <h3 className="text-white font-semibold mb-2">{t[lang].community.telegram}</h3>
+              <p className="text-crypto-gray-200 text-sm">{t[lang].community.telegramDesc}</p>
             </a>
             
             <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
               <MessageCircle className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">Discord</h3>
-              <p className="text-crypto-gray-200 text-sm">Chat with community</p>
+              <h3 className="text-white font-semibold mb-2">{t[lang].community.discord}</h3>
+              <p className="text-crypto-gray-200 text-sm">{t[lang].community.discordDesc}</p>
             </a>
             
             <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
               <Mail className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">Newsletter</h3>
-              <p className="text-crypto-gray-200 text-sm">Get updates</p>
+              <h3 className="text-white font-semibold mb-2">{t[lang].community.newsletter}</h3>
+              <p className="text-crypto-gray-200 text-sm">{t[lang].community.newsletterDesc}</p>
             </a>
           </div>
           
           <div className="glass-effect rounded-2xl p-8 max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-white mb-4">Stay Updated</h3>
+            <h3 className="text-xl font-bold text-white mb-4">{t[lang].community.stayUpdated}</h3>
             <div className="flex space-x-3">
               <input 
                 type="email" 
-                placeholder="Enter your email"
+                placeholder={t[lang].community.emailPlaceholder}
                 className="flex-1 px-4 py-3 rounded-full bg-white/20 text-white placeholder-crypto-gray-200 border border-white/30 focus:outline-none focus:border-white"
               />
               <button className="bg-white text-crypto-primary px-6 py-3 rounded-full font-semibold hover:bg-crypto-gray-50 transition-colors">
-                Subscribe
+                {t[lang].community.subscribe}
               </button>
             </div>
           </div>
@@ -527,14 +889,11 @@ function App() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">P</span>
-                </div>
+                <img src="/panitos.png" alt="Panitos Logo" className="h-8 w-8" />
                 <span className="text-2xl font-bold">Panitos</span>
               </div>
               <p className="text-crypto-gray-400 mb-6 max-w-md">
-                The future of digital assets, combining cutting-edge blockchain technology 
-                with institutional-grade security and unmatched scalability.
+                {t[lang].footer.description}
               </p>
               <div className="flex space-x-4">
                 <Twitter className="h-6 w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
@@ -545,22 +904,22 @@ function App() {
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4">{t[lang].footer.quickLinks}</h3>
               <ul className="space-y-2">
-                <li><button onClick={() => scrollToSection('about')} className="text-crypto-gray-400 hover:text-white transition-colors">About</button></li>
-                <li><button onClick={() => scrollToSection('features')} className="text-crypto-gray-400 hover:text-white transition-colors">Features</button></li>
-                <li><button onClick={() => scrollToSection('tokenomics')} className="text-crypto-gray-400 hover:text-white transition-colors">Tokenomics</button></li>
-                <li><button onClick={() => scrollToSection('roadmap')} className="text-crypto-gray-400 hover:text-white transition-colors">Roadmap</button></li>
+                <li><button onClick={() => scrollToSection('about')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[0]}</button></li>
+                <li><button onClick={() => scrollToSection('features')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[1]}</button></li>
+                <li><button onClick={() => scrollToSection('tokenomics')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[2]}</button></li>
+                <li><button onClick={() => scrollToSection('roadmap')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[3]}</button></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <h3 className="text-lg font-semibold mb-4">{t[lang].footer.legal}</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">Whitepaper</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">Audit Report</a></li>
+                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.privacy}</a></li>
+                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.terms}</a></li>
+                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.whitepaper}</a></li>
+                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.audit}</a></li>
               </ul>
             </div>
           </div>
@@ -568,10 +927,10 @@ function App() {
           <div className="border-t border-crypto-gray-800 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-crypto-gray-400 text-sm mb-4 md:mb-0">
-                © 2025 Panitos – All Rights Reserved.
+                {t[lang].footer.copyright}
               </p>
               <p className="text-crypto-gray-500 text-xs">
-                Disclaimer: Cryptocurrency investments carry risk. Please invest responsibly.
+                {t[lang].footer.disclaimer}
               </p>
             </div>
           </div>
