@@ -334,12 +334,31 @@ function App() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-crypto-dark via-crypto-primary/10 to-crypto-secondary/10 px-4">
-        {/* Background Logo */}
+        {/* --- Responsive Background START --- */}
+
+        {/* Mobile View: Two-layer approach. A blurred background fills the space, and the main image is contained on top. */}
+        <div className="absolute inset-0 z-0 md:hidden">
+          <img
+            src="/panitos.png"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover blur-sm opacity-40"
+          />
+          <img
+            src="/panitos.png"
+            alt="Panitos Background"
+            className="absolute inset-0 w-full h-full object-contain"
+          />
+        </div>
+
+        {/* Desktop View: Simple cover, as it was. */}
         <div 
-          className="absolute inset-0 opacity-45 bg-contain bg-center bg-no-repeat md:bg-cover"
+          className="absolute inset-0 opacity-45 bg-cover bg-center bg-no-repeat hidden md:block"
           style={{ backgroundImage: 'url(/panitos.png)' }}
         >
         </div>
+        
+        {/* --- Responsive Background END --- */}
         
         {/* Additional Background Overlay for Logo Visibility */}
         <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/10 via-transparent to-crypto-secondary/10"></div>
