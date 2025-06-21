@@ -335,12 +335,10 @@ function App() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-crypto-dark via-crypto-primary/10 to-crypto-secondary/10 px-4">
         {/* Background Logo */}
-        <div className="absolute inset-0 opacity-45">
-          <img 
-            src="/panitos.png" 
-            alt="Panitos Background" 
-            className="w-full h-full object-contain md:object-cover"
-          />
+        <div 
+          className="absolute inset-0 opacity-45 bg-no-repeat bg-center md:bg-cover bg-[length:auto_100%] md:bg-[length:100%_100%]"
+          style={{ backgroundImage: 'url(/panitos.png)' }}
+        >
         </div>
         
         {/* Additional Background Overlay for Logo Visibility */}
