@@ -30,11 +30,15 @@ import {
 import PriceTicker from './components/PriceTicker';
 import PriceChart from './components/PriceChart';
 import Tokenomics from './components/Tokenomics';
+import { usePumpFunData } from './hooks/usePumpFunData';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [lang, setLang] = useState<'en' | 'el'>('en');
+  
+  // Use the custom hook for real-time market data
+  const { marketData, isConnected, error, refreshData } = usePumpFunData();
 
   const t = {
     en: {
@@ -265,13 +269,16 @@ function App() {
         scrollY > 50 ? 'bg-crypto-dark/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <img src="/arrow.png" alt="Panitos Crypto Coin Logo" className="h-10 w-10" />
-              <span className="text-2xl font-bold gradient-text">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
+            >
+              <img src="/arrow.png" alt="Panitos Crypto Coin Logo" className="h-8 w-8 sm:h-10 sm:w-10" />
+              <span className="text-lg sm:text-2xl font-bold gradient-text">
                 Panitos Crypto Coin
               </span>
-            </div>
+            </button>
             
             <div className="hidden md:flex items-center space-x-8">
               <button onClick={() => scrollToSection('about')} className="text-crypto-gray-300 hover:text-crypto-primary transition-colors">{t[lang].nav[0]}</button>
@@ -295,7 +302,7 @@ function App() {
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
               </button>
             </div>
           </div>
@@ -305,25 +312,28 @@ function App() {
         {isMenuOpen && (
           <div className="md:hidden bg-crypto-dark border-t border-crypto-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <button onClick={() => scrollToSection('about')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">About</button>
-              <button onClick={() => scrollToSection('features')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Features</button>
-              <button onClick={() => scrollToSection('tokenomics')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Tokenomics</button>
-              <button onClick={() => scrollToSection('roadmap')} className="block px-3 py-2 text-crypto-gray-300 hover:text-crypto-primary">Roadmap</button>
+              <button onClick={() => scrollToSection('about')} className="block px-3 py-2 text-sm text-crypto-gray-300 hover:text-crypto-primary">{t[lang].nav[0]}</button>
+              <button onClick={() => scrollToSection('features')} className="block px-3 py-2 text-sm text-crypto-gray-300 hover:text-crypto-primary">{t[lang].nav[1]}</button>
+              <button onClick={() => scrollToSection('tokenomics')} className="block px-3 py-2 text-sm text-crypto-gray-300 hover:text-crypto-primary">{t[lang].nav[2]}</button>
+              <button onClick={() => scrollToSection('roadmap')} className="block px-3 py-2 text-sm text-crypto-gray-300 hover:text-crypto-primary">{t[lang].nav[3]}</button>
               <a 
                 href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="block px-3 py-2 text-crypto-primary font-medium"
+                className="block px-3 py-2 text-sm text-crypto-primary font-medium"
               >
-                Buy Now
+                {t[lang].nav[4]}
               </a>
+              <button onClick={() => setLang(lang === 'en' ? 'el' : 'en')} className="block w-full text-left px-3 py-2 text-sm bg-crypto-primary text-white font-bold hover:bg-crypto-secondary transition-colors">
+                {lang === 'en' ? 'ΕΛ' : 'EN'}
+              </button>
             </div>
           </div>
         )}
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-crypto-dark via-crypto-primary/10 to-crypto-secondary/10">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-crypto-dark via-crypto-primary/10 to-crypto-secondary/10 px-4">
         {/* Background Logo */}
         <div className="absolute inset-0 opacity-45">
           <img 
@@ -357,35 +367,35 @@ function App() {
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-0 animate-float">
-            <div className="w-12 h-12 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-2xl mx-auto mb-0 flex items-center justify-center shadow-2xl transform hover:rotate-12 transition-transform duration-500 hover:scale-110">
-              <Sparkles className="h-6 w-6 text-white animate-pulse" />
+          <div className="mb-4 sm:mb-0 animate-float">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-2xl mx-auto mb-0 flex items-center justify-center shadow-2xl transform hover:rotate-12 transition-transform duration-500 hover:scale-110">
+              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white animate-pulse" />
             </div>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-2 animate-fade-in text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-2 sm:mb-4 animate-fade-in text-white leading-tight">
             {t[lang].heroTitle}
           </h1>
           
-          <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
+          <p className="text-lg sm:text-xl md:text-2xl text-white mb-4 sm:mb-8 max-w-3xl mx-auto leading-relaxed animate-fade-in-up px-2">
             {t[lang].heroSubtitle}
           </p>
           
-          <p className="text-lg text-white mb-12 max-w-2xl mx-auto animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+          <p className="text-sm sm:text-base md:text-lg text-white mb-8 sm:mb-12 max-w-2xl mx-auto animate-fade-in-up px-4" style={{animationDelay: '0.2s'}}>
             {t[lang].heroDesc}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+          <div className="flex flex-col gap-4 sm:gap-6 justify-center items-center mb-12 sm:mb-16 animate-fade-in-up px-4" style={{animationDelay: '0.4s'}}>
             <a 
               href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group premium-button premium-button-primary"
+              className="group premium-button premium-button-primary w-full sm:w-auto text-center"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center space-x-3">
-                <span>{t[lang].buy}</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              <div className="relative flex items-center justify-center space-x-3">
+                <span className="text-sm sm:text-base">{t[lang].buy}</span>
+                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
             </a>
@@ -393,12 +403,12 @@ function App() {
             <a 
               href="/whitepaper.pdf" 
               download="Panitos-Whitepaper.pdf"
-              className="group premium-button premium-button-primary"
+              className="group premium-button premium-button-primary w-full sm:w-auto text-center"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center space-x-3">
-                <span>{t[lang].whitepaper}</span>
-                <Download className="h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
+              <div className="relative flex items-center justify-center space-x-3">
+                <span className="text-sm sm:text-base">{t[lang].whitepaper}</span>
+                <Download className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-y-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
             </a>
@@ -407,120 +417,131 @@ function App() {
               href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group premium-button premium-button-primary"
+              className="group premium-button premium-button-primary w-full sm:w-auto text-center"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-crypto-primary/20 via-crypto-secondary/20 to-crypto-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center space-x-3">
-                <span>{t[lang].track}</span>
-                <TrendingUp className="h-5 w-5 group-hover:translate-y-1 transition-transform duration-300" />
+              <div className="relative flex items-center justify-center space-x-3">
+                <span className="text-sm sm:text-base">{t[lang].track}</span>
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-y-1 transition-transform duration-300" />
               </div>
               <div className="shine-effect shine-effect-primary"></div>
             </a>
           </div>
           
-          <div className="mt-16 animate-bounce">
-            <ChevronDown className="h-8 w-8 mx-auto text-crypto-primary drop-shadow-lg" />
-          </div>
+          <button 
+            onClick={() => scrollToSection('market-data')}
+            className="mt-8 sm:mt-16 animate-bounce focus:outline-none"
+            aria-label="Scroll to market data"
+          >
+            <ChevronDown className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-crypto-primary drop-shadow-lg" />
+          </button>
         </div>
       </section>
 
       {/* Market Data Section */}
-      <section className="py-20 bg-crypto-dark relative overflow-hidden">
+      <section id="market-data" className="py-12 sm:py-20 bg-crypto-dark relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/5 via-transparent to-crypto-secondary/5"></div>
         <div className="absolute top-0 left-0 w-72 h-72 bg-crypto-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-crypto-secondary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fade-in">
               {lang === 'en' ? (
                 <>Live <span className="gradient-text animate-gradient">Market Data</span></>
               ) : (
                 <><span className="gradient-text animate-gradient">{t[lang].marketTitle}</span></>
               )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
-            <p className="text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up">
+            <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8 animate-scale-in"></div>
+            <p className="text-base sm:text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up px-4">
               {t[lang].marketSubtitle}
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             <div className="animate-slide-in-left">
-              <PriceChart />
+              <PriceChart marketData={marketData} onRefresh={refreshData} />
             </div>
             <div className="animate-slide-in-right">
-              <PriceTicker />
+              <PriceTicker 
+                marketData={marketData} 
+                isConnected={isConnected} 
+                error={error} 
+                onRefresh={refreshData} 
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-crypto-gray-900 relative overflow-hidden">
+      <section id="about" className="py-12 sm:py-20 bg-crypto-gray-900 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-crypto-secondary/5 via-transparent to-crypto-accent/5"></div>
         <div className="absolute top-1/4 right-0 w-64 h-64 bg-crypto-accent/10 rounded-full blur-3xl translate-x-1/2"></div>
         <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-crypto-primary/10 rounded-full blur-3xl -translate-x-1/2"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fade-in">
               {lang === 'en' ? (
                 <>About <span className="gradient-text animate-gradient">Panitos</span></>
               ) : (
                 <><span className="gradient-text animate-gradient">{t[lang].aboutTitle}</span></>
               )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
-            <p className="text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up">
+            <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8 animate-scale-in"></div>
+            <p className="text-base sm:text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up px-4">
               {t[lang].aboutSubtitle}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 animate-slide-in-left">
-              <h3 className="text-2xl font-bold text-white">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 items-center">
+            <div className="space-y-4 sm:space-y-6 animate-slide-in-left">
+              <h3 className="text-xl sm:text-2xl font-bold text-white">
                 {t[lang].aboutCardTitle}
               </h3>
-              <p className="text-lg text-crypto-gray-300 leading-relaxed">
+              <p className="text-base sm:text-lg text-crypto-gray-300 leading-relaxed">
                 {t[lang].aboutCardDesc1}
               </p>
-              <p className="text-lg text-crypto-gray-300 leading-relaxed">
+              <p className="text-base sm:text-lg text-crypto-gray-300 leading-relaxed">
                 {t[lang].aboutCardDesc2}
               </p>
-              <div className="flex items-center space-x-4 pt-4">
-                <div className="flex items-center space-x-2 bg-crypto-gray-800 px-4 py-2 rounded-full shadow-lg">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-crypto-gray-300 font-medium">{t[lang].badgeSolana}</span>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 pt-4">
+                <div className="flex items-center space-x-2 bg-crypto-gray-800 px-3 sm:px-4 py-2 rounded-full shadow-lg">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                  <span className="text-sm sm:text-base text-crypto-gray-300 font-medium">{t[lang].badgeSolana}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-crypto-gray-800 px-4 py-2 rounded-full shadow-lg">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-crypto-gray-300 font-medium">{t[lang].badgePump}</span>
+                <div className="flex items-center space-x-2 bg-crypto-gray-800 px-3 sm:px-4 py-2 rounded-full shadow-lg">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
+                  <span className="text-sm sm:text-base text-crypto-gray-300 font-medium">{t[lang].badgePump}</span>
                 </div>
               </div>
             </div>
             
             <div className="relative animate-slide-in-right">
-              <div className="bg-gradient-to-br from-crypto-primary/20 to-crypto-secondary/20 rounded-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500 floating-card">
-                <div className="bg-crypto-gray-800 rounded-xl p-6 shadow-2xl glow-effect">
-                  <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="bg-gradient-to-br from-crypto-primary/20 to-crypto-secondary/20 rounded-2xl p-4 sm:p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500 floating-card">
+                <div className="bg-crypto-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl glow-effect">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-center">
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">$4,049</div>
-                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[0]}</div>
+                      <div className="text-xl sm:text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">
+                        ${marketData.marketCap.toLocaleString()}
+                      </div>
+                      <div className="text-xs sm:text-sm text-crypto-gray-400">{t[lang].stats[0]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">1B</div>
-                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[1]}</div>
+                      <div className="text-xl sm:text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">1B</div>
+                      <div className="text-xs sm:text-sm text-crypto-gray-400">{t[lang].stats[1]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">Solana</div>
-                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[2]}</div>
+                      <div className="text-lg sm:text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">Solana</div>
+                      <div className="text-xs sm:text-sm text-crypto-gray-400">{t[lang].stats[2]}</div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">SPL</div>
-                      <div className="text-sm text-crypto-gray-400">{t[lang].stats[3]}</div>
+                      <div className="text-lg sm:text-3xl font-bold gradient-text group-hover:scale-110 transition-transform">SPL</div>
+                      <div className="text-xs sm:text-sm text-crypto-gray-400">{t[lang].stats[3]}</div>
                     </div>
                   </div>
                 </div>
@@ -531,34 +552,34 @@ function App() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-crypto-dark relative overflow-hidden">
+      <section id="features" className="py-12 sm:py-20 bg-crypto-dark relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-crypto-accent/5 via-transparent to-crypto-primary/5"></div>
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-crypto-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-crypto-secondary/10 rounded-full blur-3xl"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fade-in">
               {lang === 'en' ? (
                 <>Why Choose <span className="gradient-text">Panitos</span>?</>
               ) : (
                 <><span className="gradient-text animate-gradient">{t[lang].featuresTitle}</span></>
               )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
-            <p className="text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up">
+            <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8 animate-scale-in"></div>
+            <p className="text-base sm:text-lg text-crypto-gray-300 max-w-2xl mx-auto animate-fade-in-up px-4">
               {t[lang].featuresSubtitle}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-slide-in-left">
-              <div className="bg-gradient-to-br from-crypto-primary to-crypto-secondary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Shield className="h-8 w-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="group bg-crypto-gray-800 rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-slide-in-left">
+              <div className="bg-gradient-to-br from-crypto-primary to-crypto-secondary w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-primary transition-colors">{t[lang].feature1Title}</h3>
-              <p className="text-crypto-gray-300 leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 group-hover:text-crypto-primary transition-colors">{t[lang].feature1Title}</h3>
+              <p className="text-sm sm:text-base text-crypto-gray-300 leading-relaxed">
                 {t[lang].feature1Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
@@ -566,12 +587,12 @@ function App() {
               </div>
             </div>
             
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              <div className="bg-gradient-to-br from-crypto-secondary to-crypto-accent w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Zap className="h-8 w-8 text-white" />
+            <div className="group bg-crypto-gray-800 rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              <div className="bg-gradient-to-br from-crypto-secondary to-crypto-accent w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-secondary transition-colors">{t[lang].feature2Title}</h3>
-              <p className="text-crypto-gray-300 leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 group-hover:text-crypto-secondary transition-colors">{t[lang].feature2Title}</h3>
+              <p className="text-sm sm:text-base text-crypto-gray-300 leading-relaxed">
                 {t[lang].feature2Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
@@ -579,12 +600,12 @@ function App() {
               </div>
             </div>
             
-            <div className="group bg-crypto-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-slide-in-right">
-              <div className="bg-gradient-to-br from-crypto-accent to-crypto-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Cpu className="h-8 w-8 text-white" />
+            <div className="group bg-crypto-gray-800 rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-4 transition-all duration-500 floating-card animate-slide-in-right">
+              <div className="bg-gradient-to-br from-crypto-accent to-crypto-primary w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Cpu className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4 group-hover:text-crypto-accent transition-colors">{t[lang].feature3Title}</h3>
-              <p className="text-crypto-gray-300 leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 group-hover:text-crypto-accent transition-colors">{t[lang].feature3Title}</h3>
+              <p className="text-sm sm:text-base text-crypto-gray-300 leading-relaxed">
                 {t[lang].feature3Desc}
               </p>
               <div className="mt-4 w-full bg-crypto-gray-700 rounded-full h-1">
@@ -596,48 +617,48 @@ function App() {
       </section>
 
       {/* Tokenomics Section */}
-      <section id="tokenomics" className="py-20 bg-crypto-gray-900">
+      <section id="tokenomics" className="py-12 sm:py-20 bg-crypto-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Tokenomics lang={lang} t={t} />
+          <Tokenomics lang={lang} t={t} marketData={marketData} />
         </div>
       </section>
 
       {/* Roadmap Section */}
-      <section id="roadmap" className="py-20 bg-crypto-dark">
+      <section id="roadmap" className="py-12 sm:py-20 bg-crypto-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">
               {lang === 'en' ? (
                 <>Our <span className="gradient-text">Roadmap</span></>
               ) : (
                 <><span className="gradient-text">{t[lang].roadmap.title}</span></>
               )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8"></div>
+            <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8"></div>
           </div>
           
           <div className="relative">
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 gradient-bg hidden md:block"></div>
             
-            <div className="space-y-12">
+            <div className="space-y-8 sm:space-y-12">
               {t[lang].roadmap.items.map((item, index) => (
                 <div key={index} className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className="flex-1 md:w-1/2">
-                    <div className={`bg-crypto-gray-800 rounded-2xl p-6 shadow-lg border-l-4 ${
+                    <div className={`bg-crypto-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg border-l-4 ${
                       item.status === 'completed' ? 'border-green-500' : 
                       item.status === 'current' ? 'border-crypto-primary' : 'border-crypto-gray-300'
                     }`}>
                       <div className="flex items-center space-x-3 mb-3">
-                        <Calendar className={`h-5 w-5 ${
+                        <Calendar className={`h-4 w-4 sm:h-5 sm:w-5 ${
                           item.status === 'completed' ? 'text-green-500' : 
                           item.status === 'current' ? 'text-crypto-primary' : 'text-crypto-gray-400'
                         }`} />
-                        <span className="text-sm font-medium text-crypto-gray-400">{item.quarter}</span>
-                        {item.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-500" />}
-                        {item.status === 'current' && <Star className="h-4 w-4 text-crypto-primary" />}
+                        <span className="text-xs sm:text-sm font-medium text-crypto-gray-400">{item.quarter}</span>
+                        {item.status === 'completed' && <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />}
+                        {item.status === 'current' && <Star className="h-3 w-3 sm:h-4 sm:w-4 text-crypto-primary" />}
                       </div>
-                      <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                      <p className="text-crypto-gray-300">{item.description}</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{item.title}</h3>
+                      <p className="text-sm sm:text-base text-crypto-gray-300">{item.description}</p>
                     </div>
                   </div>
                   
@@ -654,37 +675,37 @@ function App() {
       </section>
 
       {/* Why Invest in Panitos Section */}
-      <section className="py-20 bg-crypto-gray-900 relative overflow-hidden">
+      <section className="py-12 sm:py-20 bg-crypto-gray-900 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/5 via-transparent to-crypto-secondary/5"></div>
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-crypto-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-crypto-secondary/10 rounded-full blur-3xl"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fade-in">
               {lang === 'en' ? (
                 <>Why Invest in <span className="gradient-text animate-gradient">Panitos</span>?</>
               ) : (
                 <>{t[lang].whyInvest.title}</>
               )}
             </h2>
-            <div className="w-24 h-1 gradient-bg mx-auto mb-8 animate-scale-in"></div>
-            <p className="text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up">
+            <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8 animate-scale-in"></div>
+            <p className="text-base sm:text-lg text-crypto-gray-300 max-w-3xl mx-auto animate-fade-in-up px-4">
               {t[lang].whyInvest.subtitle}
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
             {/* Left Column - Images */}
-            <div className="space-y-8 animate-slide-in-left">
+            <div className="space-y-6 sm:space-y-8 animate-slide-in-left">
               {/* First Image */}
               <div className="relative group">
                 {/* Glowing Background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-crypto-primary/30 to-crypto-secondary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                 
                 {/* Main Image Container */}
-                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
+                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-4 sm:p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
                   <div className="relative overflow-hidden rounded-2xl">
                     <img 
                       src="/panitos.png" 
@@ -696,17 +717,17 @@ function App() {
                     <div className="absolute inset-0 bg-gradient-to-t from-crypto-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     {/* Floating Elements */}
-                    <div className="absolute top-4 right-4 bg-crypto-primary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold animate-pulse">
+                    <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-crypto-primary/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 text-white text-xs sm:text-sm font-bold animate-pulse">
                       HOT
                     </div>
-                    <div className="absolute bottom-4 left-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold">
+                    <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 text-white text-xs sm:text-sm font-bold">
                       SOLANA
                     </div>
                   </div>
                   
                   {/* Decorative Elements */}
-                  <div className="absolute -top-4 -left-4 w-8 h-8 bg-crypto-primary rounded-full animate-ping opacity-75"></div>
-                  <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-crypto-secondary rounded-full animate-pulse"></div>
+                  <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 sm:w-8 h-6 sm:h-8 bg-crypto-primary rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute -bottom-2 sm:-bottom-4 -right-2 sm:-right-4 w-4 sm:w-6 h-4 sm:h-6 bg-crypto-secondary rounded-full animate-pulse"></div>
                 </div>
               </div>
               
@@ -716,7 +737,7 @@ function App() {
                 <div className="absolute inset-0 bg-gradient-to-br from-crypto-secondary/30 to-crypto-accent/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                 
                 {/* Main Image Container */}
-                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
+                <div className="relative bg-gradient-to-br from-crypto-gray-800 to-crypto-gray-900 rounded-3xl p-4 sm:p-8 shadow-2xl transform group-hover:scale-105 transition-all duration-500 floating-card">
                   <div className="relative overflow-hidden rounded-2xl">
                     <img 
                       src="/pan.png" 
@@ -728,94 +749,94 @@ function App() {
                     <div className="absolute inset-0 bg-gradient-to-t from-crypto-secondary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     {/* Floating Elements */}
-                    <div className="absolute top-4 right-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-bold animate-pulse">
+                    <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-crypto-secondary/90 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 text-white text-xs sm:text-sm font-bold animate-pulse">
                       NEW
                     </div>
                   </div>
                   
                   {/* Decorative Elements */}
-                  <div className="absolute -top-4 -left-4 w-8 h-8 bg-crypto-secondary rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 sm:w-8 h-6 sm:h-8 bg-crypto-secondary rounded-full animate-ping opacity-75"></div>
                 </div>
               </div>
             </div>
             
             {/* Right Column - Content */}
-            <div className="space-y-8 animate-slide-in-right">
-              <div className="space-y-6">
-                <h3 className="text-3xl font-bold text-white">
+            <div className="space-y-6 sm:space-y-8 animate-slide-in-right">
+              <div className="space-y-4 sm:space-y-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white">
                   {t[lang].whyInvest.earlyOpportunity}
                 </h3>
-                <p className="text-lg text-crypto-gray-300 leading-relaxed">
-                  {t[lang].whyInvest.earlyDesc}
+                <p className="text-base sm:text-lg text-crypto-gray-300 leading-relaxed">
+                  {t[lang].whyInvest.earlyDesc.replace('$4,049', `$${marketData.marketCap.toLocaleString()}`)}
                 </p>
               </div>
               
               {/* Benefits Grid */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="group bg-crypto-gray-800 rounded-xl p-4 sm:p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-white" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                      <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.highGrowth}</h4>
+                    <h4 className="text-base sm:text-lg font-bold text-white">{t[lang].whyInvest.highGrowth}</h4>
                   </div>
-                  <p className="text-crypto-gray-300 text-sm">
+                  <p className="text-crypto-gray-300 text-xs sm:text-sm">
                     {t[lang].whyInvest.highGrowthDesc}
                   </p>
                 </div>
                 
-                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                <div className="group bg-crypto-gray-800 rounded-xl p-4 sm:p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full flex items-center justify-center">
-                      <Zap className="h-5 w-5 text-white" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full flex items-center justify-center">
+                      <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.solanaBenefits}</h4>
+                    <h4 className="text-base sm:text-lg font-bold text-white">{t[lang].whyInvest.solanaBenefits}</h4>
                   </div>
-                  <p className="text-crypto-gray-300 text-sm">
+                  <p className="text-crypto-gray-300 text-xs sm:text-sm">
                     {t[lang].whyInvest.solanaBenefitsDesc}
                   </p>
                 </div>
                 
-                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                <div className="group bg-crypto-gray-800 rounded-xl p-4 sm:p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-secondary to-crypto-accent rounded-full flex items-center justify-center">
-                      <Users className="h-5 w-5 text-white" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-crypto-secondary to-crypto-accent rounded-full flex items-center justify-center">
+                      <Users className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.communityDriven}</h4>
+                    <h4 className="text-base sm:text-lg font-bold text-white">{t[lang].whyInvest.communityDriven}</h4>
                   </div>
-                  <p className="text-crypto-gray-300 text-sm">
+                  <p className="text-crypto-gray-300 text-xs sm:text-sm">
                     {t[lang].whyInvest.communityDrivenDesc}
                   </p>
                 </div>
                 
-                <div className="group bg-crypto-gray-800 rounded-xl p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
+                <div className="group bg-crypto-gray-800 rounded-xl p-4 sm:p-6 hover:bg-crypto-gray-700 transition-all duration-300 transform hover:-translate-y-2">
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-crypto-accent to-crypto-primary rounded-full flex items-center justify-center">
-                      <Shield className="h-5 w-5 text-white" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-crypto-accent to-crypto-primary rounded-full flex items-center justify-center">
+                      <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <h4 className="text-lg font-bold text-white">{t[lang].whyInvest.pumpFunListed}</h4>
+                    <h4 className="text-base sm:text-lg font-bold text-white">{t[lang].whyInvest.pumpFunListed}</h4>
                   </div>
-                  <p className="text-crypto-gray-300 text-sm">
+                  <p className="text-crypto-gray-300 text-xs sm:text-sm">
                     {t[lang].whyInvest.pumpFunListedDesc}
                   </p>
                 </div>
               </div>
               
               {/* CTA Section */}
-              <div className="bg-gradient-to-r from-crypto-primary/20 to-crypto-secondary/20 rounded-2xl p-6 border border-crypto-primary/30">
+              <div className="bg-gradient-to-r from-crypto-primary/20 to-crypto-secondary/20 rounded-2xl p-4 sm:p-6 border border-crypto-primary/30">
                 <div className="text-center">
-                  <h4 className="text-xl font-bold text-white mb-3">{t[lang].whyInvest.readyToInvest}</h4>
-                  <p className="text-crypto-gray-300 mb-4">
+                  <h4 className="text-lg sm:text-xl font-bold text-white mb-3">{t[lang].whyInvest.readyToInvest}</h4>
+                  <p className="text-sm sm:text-base text-crypto-gray-300 mb-4">
                     {t[lang].whyInvest.readyDesc}
                   </p>
                   <a 
                     href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-crypto-primary to-crypto-secondary text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-crypto-primary to-crypto-secondary text-white px-6 sm:px-8 py-3 rounded-full font-bold hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm sm:text-base"
                   >
                     <span>{t[lang].whyInvest.buyNow}</span>
-                    <ArrowRight className="h-5 w-5" />
+                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                 </div>
               </div>
@@ -825,57 +846,57 @@ function App() {
       </section>
 
       {/* Community Section */}
-      <section id="community" className="py-20 gradient-bg">
+      <section id="community" className="py-12 sm:py-20 gradient-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <div className="mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">
               {lang === 'en' ? (
                 <>Join Our <span className="text-crypto-gray-200">Community</span></>
               ) : (
                 <>{t[lang].community.title}</>
               )}
             </h2>
-            <div className="w-24 h-1 bg-white mx-auto mb-8"></div>
-            <p className="text-xl text-crypto-gray-200 max-w-3xl mx-auto">
+            <div className="w-24 h-1 bg-white mx-auto mb-6 sm:mb-8"></div>
+            <p className="text-base sm:text-xl text-crypto-gray-200 max-w-3xl mx-auto px-4">
               {t[lang].community.subtitle}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
-            <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-              <Twitter className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">{t[lang].community.twitter}</h3>
-              <p className="text-crypto-gray-200 text-sm">{t[lang].community.twitterDesc}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            <a href="#" className="group glass-effect rounded-2xl p-4 sm:p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+              <Twitter className="h-6 w-6 sm:h-8 sm:w-8 text-white mx-auto mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{t[lang].community.twitter}</h3>
+              <p className="text-crypto-gray-200 text-xs sm:text-sm">{t[lang].community.twitterDesc}</p>
             </a>
             
-            <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-              <Send className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">{t[lang].community.telegram}</h3>
-              <p className="text-crypto-gray-200 text-sm">{t[lang].community.telegramDesc}</p>
+            <a href="#" className="group glass-effect rounded-2xl p-4 sm:p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+              <Send className="h-6 w-6 sm:h-8 sm:w-8 text-white mx-auto mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{t[lang].community.telegram}</h3>
+              <p className="text-crypto-gray-200 text-xs sm:text-sm">{t[lang].community.telegramDesc}</p>
             </a>
             
-            <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-              <MessageCircle className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">{t[lang].community.discord}</h3>
-              <p className="text-crypto-gray-200 text-sm">{t[lang].community.discordDesc}</p>
+            <a href="#" className="group glass-effect rounded-2xl p-4 sm:p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+              <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-white mx-auto mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{t[lang].community.discord}</h3>
+              <p className="text-crypto-gray-200 text-xs sm:text-sm">{t[lang].community.discordDesc}</p>
             </a>
             
-            <a href="#" className="group glass-effect rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-              <Mail className="h-8 w-8 text-white mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-white font-semibold mb-2">{t[lang].community.newsletter}</h3>
-              <p className="text-crypto-gray-200 text-sm">{t[lang].community.newsletterDesc}</p>
+            <a href="#" className="group glass-effect rounded-2xl p-4 sm:p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+              <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-white mx-auto mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{t[lang].community.newsletter}</h3>
+              <p className="text-crypto-gray-200 text-xs sm:text-sm">{t[lang].community.newsletterDesc}</p>
             </a>
           </div>
           
-          <div className="glass-effect rounded-2xl p-8 max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-white mb-4">{t[lang].community.stayUpdated}</h3>
-            <div className="flex space-x-3">
+          <div className="glass-effect rounded-2xl p-6 sm:p-8 max-w-md mx-auto">
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-4">{t[lang].community.stayUpdated}</h3>
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
               <input 
                 type="email" 
                 placeholder={t[lang].community.emailPlaceholder}
-                className="flex-1 px-4 py-3 rounded-full bg-white/20 text-white placeholder-crypto-gray-200 border border-white/30 focus:outline-none focus:border-white"
+                className="flex-1 px-4 py-3 rounded-full bg-white/20 text-white placeholder-crypto-gray-200 border border-white/30 focus:outline-none focus:border-white text-sm sm:text-base"
               />
-              <button className="bg-white text-crypto-primary px-6 py-3 rounded-full font-semibold hover:bg-crypto-gray-50 transition-colors">
+              <button className="bg-white text-crypto-primary px-6 py-3 rounded-full font-semibold hover:bg-crypto-gray-50 transition-colors text-sm sm:text-base">
                 {t[lang].community.subscribe}
               </button>
             </div>
@@ -884,52 +905,52 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-crypto-gray-900 text-white py-12">
+      <footer className="bg-crypto-gray-900 text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
+            <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/panitos.png" alt="Panitos Logo" className="h-8 w-8" />
-                <span className="text-2xl font-bold">Panitos</span>
+                <img src="/panitos.png" alt="Panitos Logo" className="h-6 w-6 sm:h-8 sm:w-8" />
+                <span className="text-lg sm:text-2xl font-bold">Panitos Crypto Coin</span>
               </div>
-              <p className="text-crypto-gray-400 mb-6 max-w-md">
+              <p className="text-sm sm:text-base text-crypto-gray-400 mb-4 sm:mb-6 max-w-md">
                 {t[lang].footer.description}
               </p>
               <div className="flex space-x-4">
-                <Twitter className="h-6 w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
-                <Send className="h-6 w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
-                <MessageCircle className="h-6 w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
-                <Mail className="h-6 w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
+                <Twitter className="h-5 w-5 sm:h-6 sm:w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
+                <Send className="h-5 w-5 sm:h-6 sm:w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
+                <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
+                <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-crypto-gray-400 hover:text-crypto-primary cursor-pointer transition-colors" />
               </div>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4">{t[lang].footer.quickLinks}</h3>
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t[lang].footer.quickLinks}</h3>
               <ul className="space-y-2">
-                <li><button onClick={() => scrollToSection('about')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[0]}</button></li>
-                <li><button onClick={() => scrollToSection('features')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[1]}</button></li>
-                <li><button onClick={() => scrollToSection('tokenomics')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[2]}</button></li>
-                <li><button onClick={() => scrollToSection('roadmap')} className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[3]}</button></li>
+                <li><button onClick={() => scrollToSection('about')} className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[0]}</button></li>
+                <li><button onClick={() => scrollToSection('features')} className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[1]}</button></li>
+                <li><button onClick={() => scrollToSection('tokenomics')} className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[2]}</button></li>
+                <li><button onClick={() => scrollToSection('roadmap')} className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].nav[3]}</button></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4">{t[lang].footer.legal}</h3>
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t[lang].footer.legal}</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.privacy}</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.terms}</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.whitepaper}</a></li>
-                <li><a href="#" className="text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.audit}</a></li>
+                <li><a href="#" className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.privacy}</a></li>
+                <li><a href="#" className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.terms}</a></li>
+                <li><a href="#" className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.whitepaper}</a></li>
+                <li><a href="#" className="text-sm sm:text-base text-crypto-gray-400 hover:text-white transition-colors">{t[lang].footer.audit}</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t border-crypto-gray-800 mt-12 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-crypto-gray-400 text-sm mb-4 md:mb-0">
+          <div className="border-t border-crypto-gray-800 mt-8 sm:mt-12 pt-6 sm:pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+              <p className="text-xs sm:text-sm text-crypto-gray-400 text-center md:text-left">
                 {t[lang].footer.copyright}
               </p>
-              <p className="text-crypto-gray-500 text-xs">
+              <p className="text-xs text-crypto-gray-500 text-center md:text-right">
                 {t[lang].footer.disclaimer}
               </p>
             </div>

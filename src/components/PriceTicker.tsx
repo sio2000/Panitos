@@ -1,68 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+import React from 'react';
+import { TrendingUp, TrendingDown, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 
-interface CryptoData {
-  symbol: string;
-  name: string;
+interface TradeData {
   price: number;
-  change24h: number;
-  marketCap: number;
-  volume24h: number;
-  holders?: number;
+  amount: number;
+  side: 'buy' | 'sell';
+  timestamp: number;
+  txHash: string;
 }
 
-const PriceTicker: React.FC = () => {
-  const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+interface MarketData {
+  currentPrice: number;
+  priceChange24h: number;
+  volume24h: number;
+  marketCap: number;
+  holders: number;
+  recentTrades: TradeData[];
+  lastUpdated: Date;
+}
 
-  const fetchPanitosData = async () => {
-    try {
-      setLoading(true);
-      
-      // Fetch data from pump.fun API
-      const response = await fetch('https://pump.fun/api/coins/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump');
-      const data = await response.json();
-      
-      if (data && data.coin) {
-        const panitosData: CryptoData = {
-          symbol: 'PAN',
-          name: 'Panitos',
-          price: parseFloat(data.coin.price || 0),
-          change24h: parseFloat(data.coin.priceChange24h || 0),
-          marketCap: parseFloat(data.coin.marketCap || 0),
-          volume24h: parseFloat(data.coin.volume24h || 0),
-          holders: parseInt(data.coin.holders || 0)
-        };
-        
-        setCryptoData([panitosData]);
-        setLastUpdated(new Date());
-      }
-    } catch (error) {
-      console.error('Error fetching Panitos data:', error);
-      // Fallback data if API fails
-      setCryptoData([{
-        symbol: 'PAN',
-        name: 'Panitos',
-        price: 0.00125,
-        change24h: 12.5,
-        marketCap: 1250000,
-        volume24h: 50000
-      }]);
-    } finally {
-      setLoading(false);
-    }
-  };
+interface PriceTickerProps {
+  marketData: MarketData;
+  isConnected: boolean;
+  error: string | null;
+  onRefresh: () => void;
+}
 
-  useEffect(() => {
-    fetchPanitosData();
-    
-    // Refresh data every 30 seconds
-    const interval = setInterval(fetchPanitosData, 30000);
-    
-    return () => clearInterval(interval);
-  }, []);
-
+const PriceTicker: React.FC<PriceTickerProps> = ({ 
+  marketData, 
+  isConnected, 
+  error, 
+  onRefresh 
+}) => {
   const formatPrice = (price: number) => {
     if (price >= 1) return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     return `$${price.toFixed(6)}`;
@@ -82,85 +51,118 @@ const PriceTicker: React.FC = () => {
   };
 
   return (
-    <div className="bg-crypto-dark/50 backdrop-blur-sm border border-crypto-gray-700 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white">Live Market Data</h3>
+    <div className="bg-crypto-dark/50 backdrop-blur-sm border border-crypto-gray-700 rounded-xl p-3 sm:p-4">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h3 className="text-base sm:text-lg font-bold text-white">Live Market Data</h3>
         <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <div className={`w-2 h-2 rounded-full animate-pulse ${
+            isConnected ? 'bg-green-500' : 'bg-red-500'
+          }`}></div>
+          {isConnected ? (
+            <Wifi className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+          ) : (
+            <WifiOff className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
+          )}
           <button 
-            onClick={fetchPanitosData}
-            disabled={loading}
+            onClick={onRefresh}
             className="text-crypto-gray-400 hover:text-crypto-primary transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
-      
-      <div className="space-y-3">
-        {cryptoData.map((crypto) => (
-          <div key={crypto.symbol} className="space-y-3">
-            {/* Main Price Card */}
-            <div className="flex items-center justify-between p-4 bg-crypto-gray-800/50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">{crypto.symbol}</span>
-                </div>
-                <div>
-                  <div className="text-white font-semibold text-lg">{crypto.name}</div>
-                  <div className="text-crypto-gray-400 text-sm">{crypto.symbol}</div>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className="text-white font-bold text-lg">{formatPrice(crypto.price)}</div>
-                <div className={`flex items-center space-x-1 text-sm ${
-                  crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {crypto.change24h >= 0 ? (
-                    <TrendingUp className="w-4 h-4" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4" />
-                  )}
-                  <span>{Math.abs(crypto.change24h).toFixed(2)}%</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Additional Stats */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-crypto-gray-800/30 rounded-lg p-3">
-                <div className="text-crypto-gray-400 text-xs">Market Cap</div>
-                <div className="text-white font-semibold">{formatMarketCap(crypto.marketCap)}</div>
-              </div>
-              <div className="bg-crypto-gray-800/30 rounded-lg p-3">
-                <div className="text-crypto-gray-400 text-xs">24h Volume</div>
-                <div className="text-white font-semibold">{formatVolume(crypto.volume24h)}</div>
-              </div>
-              {crypto.holders && (
-                <div className="bg-crypto-gray-800/30 rounded-lg p-3">
-                  <div className="text-crypto-gray-400 text-xs">Holders</div>
-                  <div className="text-white font-semibold">{crypto.holders.toLocaleString()}</div>
-                </div>
-              )}
+      {error && (
+        <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+          <p className="text-red-400 text-xs sm:text-sm">{error}</p>
+        </div>
+      )}
+      
+      <div className="space-y-2 sm:space-y-3">
+        {/* Main Price Card */}
+        <div className="flex items-center justify-between p-3 sm:p-4 bg-crypto-gray-800/50 rounded-lg">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-crypto-primary to-crypto-secondary rounded-full flex items-center justify-center">
+              <span className="text-white text-xs sm:text-sm font-bold">PAN</span>
+            </div>
+            <div>
+              <div className="text-white font-semibold text-sm sm:text-lg">Panitos</div>
+              <div className="text-crypto-gray-400 text-xs sm:text-sm">PAN</div>
             </div>
           </div>
-        ))}
+          
+          <div className="text-right">
+            <div className="text-white font-bold text-sm sm:text-lg">{formatPrice(marketData.currentPrice)}</div>
+            <div className={`flex items-center space-x-1 text-xs sm:text-sm ${
+              marketData.priceChange24h >= 0 ? 'text-green-400' : 'text-red-400'
+            }`}>
+              {marketData.priceChange24h >= 0 ? (
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              ) : (
+                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />
+              )}
+              <span>{Math.abs(marketData.priceChange24h).toFixed(2)}%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="bg-crypto-gray-800/30 rounded-lg p-2 sm:p-3">
+            <div className="text-crypto-gray-400 text-xs">Market Cap</div>
+            <div className="text-white font-semibold text-xs sm:text-sm">{formatMarketCap(marketData.marketCap)}</div>
+          </div>
+          <div className="bg-crypto-gray-800/30 rounded-lg p-2 sm:p-3">
+            <div className="text-crypto-gray-400 text-xs">24h Volume</div>
+            <div className="text-white font-semibold text-xs sm:text-sm">{formatVolume(marketData.volume24h)}</div>
+          </div>
+          <div className="bg-crypto-gray-800/30 rounded-lg p-2 sm:p-3">
+            <div className="text-crypto-gray-400 text-xs">Holders</div>
+            <div className="text-white font-semibold text-xs sm:text-sm">{marketData.holders.toLocaleString()}</div>
+          </div>
+          <div className="bg-crypto-gray-800/30 rounded-lg p-2 sm:p-3">
+            <div className="text-crypto-gray-400 text-xs">Recent Trades</div>
+            <div className="text-white font-semibold text-xs sm:text-sm">{marketData.recentTrades.length}</div>
+          </div>
+        </div>
+
+        {/* Recent Trades */}
+        {marketData.recentTrades.length > 0 && (
+          <div className="bg-crypto-gray-800/30 rounded-lg p-2 sm:p-3">
+            <div className="text-crypto-gray-400 text-xs mb-2">Recent Trades</div>
+            <div className="space-y-1 max-h-24 sm:max-h-32 overflow-y-auto">
+              {marketData.recentTrades.slice(0, 5).map((trade, index) => (
+                <div key={index} className="flex justify-between items-center text-xs">
+                  <span className={`${
+                    trade.side === 'buy' ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {trade.side.toUpperCase()}
+                  </span>
+                  <span className="text-white">{formatPrice(trade.price)}</span>
+                  <span className="text-crypto-gray-400">
+                    {new Date(trade.timestamp).toLocaleTimeString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="mt-4 text-center">
+      <div className="mt-3 sm:mt-4 text-center">
         <a 
           href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-crypto-primary hover:text-crypto-secondary text-sm transition-colors"
+          className="text-crypto-primary hover:text-crypto-secondary text-xs sm:text-sm transition-colors"
         >
           View on Pump.fun →
         </a>
       </div>
 
       <div className="mt-2 text-center text-crypto-gray-500 text-xs">
-        Last updated: {lastUpdated.toLocaleTimeString()}
+        Last updated: {marketData.lastUpdated.toLocaleTimeString()}
+        {isConnected && <span className="ml-2 text-green-400">● Live</span>}
       </div>
     </div>
   );

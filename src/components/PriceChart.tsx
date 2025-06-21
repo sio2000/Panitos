@@ -1,125 +1,156 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+
+interface TradeData {
+  price: number;
+  amount: number;
+  side: 'buy' | 'sell';
+  timestamp: number;
+  txHash: string;
+}
+
+interface MarketData {
+  currentPrice: number;
+  priceChange24h: number;
+  volume24h: number;
+  marketCap: number;
+  holders: number;
+  recentTrades: TradeData[];
+  lastUpdated: Date;
+}
+
+interface PriceChartProps {
+  marketData: MarketData;
+  onRefresh: () => void;
+}
 
 interface ChartData {
   time: string;
   price: number;
 }
 
-interface PriceData {
-  price: number;
-  priceChange24h: number;
-  volume24h: number;
-  marketCap: number;
-}
-
-const PriceChart: React.FC = () => {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [priceData, setPriceData] = useState<PriceData>({
-    price: 0,
-    priceChange24h: 0,
-    volume24h: 0,
-    marketCap: 0
-  });
+const PriceChart: React.FC<PriceChartProps> = ({ marketData, onRefresh }) => {
   const [timeframe, setTimeframe] = useState<'1H' | '24H' | '7D' | '30D'>('24H');
-  const [loading, setLoading] = useState(true);
 
-  const fetchPriceData = async () => {
-    try {
-      setLoading(true);
+  // Generate chart data from recent trades
+  const chartData = useMemo(() => {
+    if (marketData.recentTrades.length === 0) {
+      // Fallback data if no trades available
+      const data: ChartData[] = [];
+      const now = new Date();
+      const basePrice = marketData.currentPrice;
       
-      // Fetch current price data from pump.fun API
-      const response = await fetch('https://pump.fun/api/coins/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump');
-      const data = await response.json();
+      let points = 24;
+      let interval = 60 * 60 * 1000; // 1 hour
       
-      if (data && data.coin) {
-        const currentPrice = parseFloat(data.coin.price || 0);
-        const priceChange = parseFloat(data.coin.priceChange24h || 0);
-        const volume = parseFloat(data.coin.volume24h || 0);
-        const marketCap = parseFloat(data.coin.marketCap || 0);
-        
-        setPriceData({
-          price: currentPrice,
-          priceChange24h: priceChange,
-          volume24h: volume,
-          marketCap: marketCap
-        });
-
-        // Generate chart data based on current price and timeframe
-        generateChartData(currentPrice, priceChange);
-      }
-    } catch (error) {
-      console.error('Error fetching price data:', error);
-      // Fallback data
-      setPriceData({
-        price: 0.00125,
-        priceChange24h: 12.5,
-        volume24h: 50000,
-        marketCap: 1250000
-      });
-      generateChartData(0.00125, 12.5);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generateChartData = (currentPrice: number, priceChange: number) => {
-    const data: ChartData[] = [];
-    const now = new Date();
-    const basePrice = currentPrice;
-    const volatility = Math.abs(priceChange) / 100; // Use actual price change for volatility
-    
-    // Generate data points based on timeframe
-    let points = 24;
-    let interval = 60 * 60 * 1000; // 1 hour
-    
-    if (timeframe === '1H') {
-      points = 60;
-      interval = 60 * 1000; // 1 minute
-    } else if (timeframe === '7D') {
-      points = 168;
-      interval = 60 * 60 * 1000; // 1 hour
-    } else if (timeframe === '30D') {
-      points = 30;
-      interval = 24 * 60 * 60 * 1000; // 1 day
-    }
-    
-    for (let i = points - 1; i >= 0; i--) {
-      const time = new Date(now.getTime() - i * interval);
-      const progress = i / points;
-      
-      // Create realistic price movement based on actual price change
-      const trend = priceChange >= 0 ? 1 : -1;
-      const priceVariation = Math.sin(progress * Math.PI * 2) * volatility * 0.5;
-      const randomVariation = (Math.random() - 0.5) * volatility * 0.3;
-      const price = basePrice * (1 + trend * progress * Math.abs(priceChange) / 100 + priceVariation + randomVariation);
-      
-      let timeString = '';
       if (timeframe === '1H') {
-        timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      } else if (timeframe === '24H') {
-        timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        points = 60;
+        interval = 60 * 1000; // 1 minute
       } else if (timeframe === '7D') {
-        timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      } else {
-        timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        points = 168;
+        interval = 60 * 60 * 1000; // 1 hour
+      } else if (timeframe === '30D') {
+        points = 30;
+        interval = 24 * 60 * 60 * 1000; // 1 day
       }
       
-      data.push({
-        time: timeString,
-        price: Math.max(price, 0.000001) // Ensure price is never negative
-      });
+      for (let i = points - 1; i >= 0; i--) {
+        const time = new Date(now.getTime() - i * interval);
+        const progress = i / points;
+        
+        const trend = marketData.priceChange24h >= 0 ? 1 : -1;
+        const volatility = Math.abs(marketData.priceChange24h) / 100;
+        const priceVariation = Math.sin(progress * Math.PI * 2) * volatility * 0.5;
+        const randomVariation = (Math.random() - 0.5) * volatility * 0.3;
+        const price = basePrice * (1 + trend * progress * Math.abs(marketData.priceChange24h) / 100 + priceVariation + randomVariation);
+        
+        let timeString = '';
+        if (timeframe === '1H') {
+          timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        } else if (timeframe === '24H') {
+          timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        } else if (timeframe === '7D') {
+          timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } else {
+          timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        data.push({
+          time: timeString,
+          price: Math.max(price, 0.000001)
+        });
+      }
+      
+      return data;
     }
+
+    // Use real trade data
+    const sortedTrades = [...marketData.recentTrades].sort((a, b) => a.timestamp - b.timestamp);
+    const now = Date.now();
+    const timeframeMs = timeframe === '1H' ? 60 * 60 * 1000 : 
+                       timeframe === '24H' ? 24 * 60 * 60 * 1000 :
+                       timeframe === '7D' ? 7 * 24 * 60 * 60 * 1000 :
+                       30 * 24 * 60 * 60 * 1000;
     
-    setChartData(data);
-  };
+    const filteredTrades = sortedTrades.filter(trade => 
+      trade.timestamp >= now - timeframeMs
+    );
 
-  useEffect(() => {
-    fetchPriceData();
-  }, [timeframe]);
+    if (filteredTrades.length === 0) {
+      return [{
+        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        price: marketData.currentPrice
+      }];
+    }
 
-  const isPositive = priceData.priceChange24h >= 0;
+    // Group trades by time intervals and calculate average prices
+    const interval = timeframe === '1H' ? 60 * 1000 : // 1 minute
+                    timeframe === '24H' ? 5 * 60 * 1000 : // 5 minutes
+                    timeframe === '7D' ? 60 * 60 * 1000 : // 1 hour
+                    24 * 60 * 60 * 1000; // 1 day
+
+    const groupedTrades = new Map<number, number[]>();
+    
+    filteredTrades.forEach(trade => {
+      const intervalTime = Math.floor(trade.timestamp / interval) * interval;
+      if (!groupedTrades.has(intervalTime)) {
+        groupedTrades.set(intervalTime, []);
+      }
+      groupedTrades.get(intervalTime)!.push(trade.price);
+    });
+
+    const chartData: ChartData[] = Array.from(groupedTrades.entries())
+      .map(([timestamp, prices]) => {
+        const avgPrice = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+        const time = new Date(timestamp);
+        
+        let timeString = '';
+        if (timeframe === '1H') {
+          timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        } else if (timeframe === '24H') {
+          timeString = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        } else if (timeframe === '7D') {
+          timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } else {
+          timeString = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        return {
+          time: timeString,
+          price: avgPrice
+        };
+      })
+      .sort((a, b) => {
+        const timeA = new Date(a.time).getTime();
+        const timeB = new Date(b.time).getTime();
+        return timeA - timeB;
+      });
+
+    return chartData;
+  }, [marketData.recentTrades, marketData.currentPrice, marketData.priceChange24h, timeframe]);
+
+  const isPositive = marketData.priceChange24h >= 0;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -148,43 +179,42 @@ const PriceChart: React.FC = () => {
   };
 
   return (
-    <div className="bg-crypto-dark/50 backdrop-blur-sm border border-crypto-gray-700 rounded-xl p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-crypto-dark/50 backdrop-blur-sm border border-crypto-gray-700 rounded-xl p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
         <div>
-          <h3 className="text-xl font-bold text-white">Panitos (PAN) Price</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-white">Panitos (PAN) Price</h3>
           <div className="flex items-center space-x-2 mt-1">
-            <span className="text-2xl font-bold text-white">{formatPrice(priceData.price)}</span>
-            <div className={`flex items-center space-x-1 text-sm ${
+            <span className="text-xl sm:text-2xl font-bold text-white">{formatPrice(marketData.currentPrice)}</span>
+            <div className={`flex items-center space-x-1 text-xs sm:text-sm ${
               isPositive ? 'text-green-400' : 'text-red-400'
             }`}>
               {isPositive ? (
-                <TrendingUp className="w-4 h-4" />
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
               ) : (
-                <TrendingDown className="w-4 h-4" />
+                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />
               )}
-              <span>{Math.abs(priceData.priceChange24h).toFixed(2)}%</span>
+              <span>{Math.abs(marketData.priceChange24h).toFixed(2)}%</span>
             </div>
           </div>
-          <div className="text-crypto-gray-400 text-sm mt-1">
-            Market Cap: {formatMarketCap(priceData.marketCap)}
+          <div className="text-crypto-gray-400 text-xs sm:text-sm mt-1">
+            Market Cap: {formatMarketCap(marketData.marketCap)}
           </div>
         </div>
         
         <div className="flex items-center space-x-2">
           <button 
-            onClick={fetchPriceData}
-            disabled={loading}
+            onClick={onRefresh}
             className="text-crypto-gray-400 hover:text-crypto-primary transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-4 h-4" />
           </button>
           
-          <div className="flex space-x-2">
+          <div className="flex space-x-1 sm:space-x-2">
             {(['1H', '24H', '7D', '30D'] as const).map((period) => (
               <button
                 key={period}
                 onClick={() => setTimeframe(period)}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   timeframe === period
                     ? 'bg-crypto-primary text-white'
                     : 'bg-crypto-gray-700 text-crypto-gray-300 hover:bg-crypto-gray-600'
@@ -197,7 +227,7 @@ const PriceChart: React.FC = () => {
         </div>
       </div>
 
-      <div className="h-64">
+      <div className="h-48 sm:h-64">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData}>
             <defs>
@@ -210,13 +240,13 @@ const PriceChart: React.FC = () => {
             <XAxis 
               dataKey="time" 
               stroke="#9CA3AF" 
-              fontSize={12}
+              fontSize={10}
               tickLine={false}
               axisLine={false}
             />
             <YAxis 
               stroke="#9CA3AF" 
-              fontSize={12}
+              fontSize={10}
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => `$${value.toFixed(6)}`}
@@ -238,7 +268,7 @@ const PriceChart: React.FC = () => {
           href="https://pump.fun/coin/72uC9rda8N12zWKYLyCeiQBiYU1EavgYKvDyQoCepump" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-crypto-primary hover:text-crypto-secondary text-sm transition-colors"
+          className="text-crypto-primary hover:text-crypto-secondary text-xs sm:text-sm transition-colors"
         >
           View Detailed Chart on Pump.fun →
         </a>
