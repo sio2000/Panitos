@@ -339,12 +339,7 @@ function App() {
           <img 
             src="/panitos.png" 
             alt="Panitos Background" 
-            className="w-full h-full object-cover"
-            style={{
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
+            className="w-full h-full object-contain md:object-cover"
           />
         </div>
         
