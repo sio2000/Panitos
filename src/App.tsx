@@ -461,9 +461,15 @@ function App() {
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 animate-fade-in">
               {lang === 'en' ? (
-                <>Live <span className="gradient-text animate-gradient">Market Data</span></>
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full animate-pulse"></div>
+                  <span>Live <span className="gradient-text animate-gradient">Market Data</span></span>
+                </div>
               ) : (
-                <><span className="gradient-text animate-gradient">{t[lang].marketTitle}</span></>
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full animate-pulse"></div>
+                  <span><span className="gradient-text animate-gradient">{t[lang].marketTitle}</span></span>
+                </div>
               )}
             </h2>
             <div className="w-24 h-1 gradient-bg mx-auto mb-6 sm:mb-8 animate-scale-in"></div>
